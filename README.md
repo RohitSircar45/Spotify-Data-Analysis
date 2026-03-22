@@ -1,4 +1,4 @@
-# Spotify Data Analytics — SQL Business Intelligence
+# Spotify Data Analytics SQL Business Intelligence
 
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![SQL](https://img.shields.io/badge/SQL-Window%20Functions-00A878?style=for-the-badge)
