@@ -1,10 +1,9 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/Spotify-1ED760?style=for-the-badge&logo=spotify&logoColor=black" alt="Spotify" height="40"/>
+  <img src="spotify_logo.png" alt="Spotify" width="160"/>
 </p>
 
 # Spotify Data Analytics — SQL Business Intelligence
 
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![SQL](https://img.shields.io/badge/SQL-Window%20Functions-00A878?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Complete-1DB954?style=for-the-badge)
 
