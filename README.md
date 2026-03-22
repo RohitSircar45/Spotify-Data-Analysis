@@ -1,11 +1,4 @@
-<p align="center">
-  <img src="spotify_logo.png" alt="Spotify" width="160"/>
-</p>
-
 # Spotify Data Analytics — SQL Business Intelligence
-
-![SQL](https://img.shields.io/badge/SQL-Window%20Functions-00A878?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Complete-1DB954?style=for-the-badge)
 
 A structured SQL analysis of the Spotify dataset using PostgreSQL window functions to answer 10 business intelligence questions across content strategy, artist performance, engagement, and streaming trends.
 
