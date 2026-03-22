@@ -1,0 +1,191 @@
+DROP TABLE IF EXISTS spotify;
+CREATE TABLE spotify (
+    artist VARCHAR(255),
+    track VARCHAR(255),
+    album VARCHAR(255),
+    album_type VARCHAR(50),
+    danceability FLOAT,
+    energy FLOAT,
+    loudness FLOAT,
+    speechiness FLOAT,
+    acousticness FLOAT,
+    instrumentalness FLOAT,
+    liveness FLOAT,
+    valence FLOAT,
+    tempo FLOAT,
+    duration_min FLOAT,
+    title VARCHAR(255),
+    channel VARCHAR(255),
+    views FLOAT,
+    likes BIGINT,
+    comments BIGINT,
+    licensed BOOLEAN,
+    official_video BOOLEAN,
+    stream BIGINT,
+    energy_liveness FLOAT,
+    most_played_on VARCHAR(50)
+);
+
+-- EDA 
+
+SELECT COUNT(*) FROM spotify;
+
+SELECT * FROM spotify;
+
+SELECT COUNT(DISTINCT album) FROM spotify;
+
+SELECT DISTINCT album_type FROM spotify;
+
+SELECT MAX(duration_min) FROM spotify;
+
+SELECT MIN(duration_min) FROM spotify;
+
+DELETE FROM spotify 
+WHERE duration_min = 0
+SELECT * FROM spotify 
+WHERE duration_min = 0
+
+
+-- Data Analysis
+
+
+-- Q.1 Return the most viewed tracks for each artist.
+
+SELECT artist, track, views
+FROM (
+    SELECT 
+        artist,
+        track,
+        views,
+        RANK() OVER (PARTITION BY artist ORDER BY views DESC) AS rnk
+    FROM spotify
+) t
+WHERE rnk = 1;
+
+-- Q.2 Rank Albums by Total Streams per Artist
+
+SELECT 
+    artist,
+    album,
+    total_streams,
+    RANK() OVER (PARTITION BY artist ORDER BY total_streams DESC) AS rank
+FROM (
+    SELECT 
+        artist,
+        album,
+        SUM(stream) AS total_streams
+    FROM spotify
+    GROUP BY artist, album
+) t;
+
+-- Q.3 Find Top 3 Tracks by Energy per Artist
+
+SELECT artist, track, energy
+FROM (
+    SELECT 
+        artist,
+        track,
+        energy,
+        ROW_NUMBER() OVER (PARTITION BY artist ORDER BY energy DESC) AS rn
+    FROM spotify
+) t
+WHERE rn <= 3;
+
+-- Q.4 Find the most engaging track in each album using: engagement = likes + comments
+
+SELECT album, track, engagement
+FROM (
+    SELECT 
+        album,
+        track,
+        (likes + comments) AS engagement,
+        RANK() OVER (PARTITION BY album ORDER BY (likes + comments) DESC) AS rnk
+    FROM spotify
+) t
+WHERE rnk = 1;
+
+-- Q.5 For each artist, return each track, its views, and the difference between its rank and the top rank (1).
+
+SELECT 
+    artist,
+    track,
+    views,
+    RANK() OVER (PARTITION BY artist ORDER BY views DESC) AS rnk,
+    RANK() OVER (PARTITION BY artist ORDER BY views DESC) - 1 AS rank_gap
+FROM spotify;
+
+-- Q.6 For each artist, show each track’s stream and the previous track’s stream.
+
+SELECT 
+    artist,
+    track,
+    stream,
+    LAG(stream) OVER (
+        PARTITION BY artist 
+        ORDER BY stream
+    ) AS previous_stream
+FROM spotify;
+
+
+-- Q.7 Compute a running total of streams for each artist ordered by stream size (highest first).
+
+
+SELECT 
+    artist,
+    track,
+    stream,
+    SUM(stream) OVER (
+        PARTITION BY artist 
+        ORDER BY stream DESC
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS running_total
+FROM spotify;
+
+
+-- Q.8 Return only the 2nd most viewed track for each artist.
+
+
+SELECT artist, track, views
+FROM (
+    SELECT 
+        artist,
+        track,
+        views,
+        ROW_NUMBER() OVER (
+            PARTITION BY artist 
+            ORDER BY views DESC
+        ) AS rn
+    FROM spotify
+) t
+WHERE rn = 2;
+
+
+-- Q.9 For each artist, return their first track when ordered by stream (lowest to highest).
+
+SELECT artist, track, stream, rn
+FROM (
+    SELECT 
+        artist,
+        track,
+        stream,
+        ROW_NUMBER() OVER (
+            PARTITION BY artist 
+            ORDER BY stream ASC
+        ) AS rn
+    FROM spotify
+) t
+WHERE rn = 1;
+
+
+-- Q.10 Rank tracks within each album by danceability using DENSE_RANK.
+
+SELECT 
+    artist,
+    album,
+    track,
+    danceability,
+    DENSE_RANK() OVER (
+        PARTITION BY album 
+        ORDER BY danceability DESC
+    ) AS rnk
+FROM spotify;
